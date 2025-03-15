@@ -1,0 +1,40 @@
+<!-- src/app/layout/sidebar/sidebar.component.html -->
+<div class="sidebar-container" [class.expanded]="isExpanded">
+    <!-- Logo section -->
+    <div class="logo-container">
+      <img src="assets/images/logo-white.png" alt="Logo" class="logo">
+      <span class="app-name" *ngIf="isExpanded">School MS</span>
+    </div>
+    
+    <mat-divider class="divider"></mat-divider>
+    
+    <!-- Navigation menu -->
+    <div class="nav-list-container">
+      <mat-nav-list class="nav-list">
+        <ng-container *ngFor="let item of navItems">
+          <a mat-list-item 
+             *ngIf="hasPermission(item)"
+             [routerLink]="item.route" 
+             routerLinkActive="active-link"
+             class="nav-item"
+             [matTooltip]="!isExpanded ? item.name : ''"
+             matTooltipPosition="right">
+            <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
+            <span class="nav-text" *ngIf="isExpanded">{{ item.name }}</span>
+          </a>
+        </ng-container>
+      </mat-nav-list>
+    </div>
+  
+    <!-- Bottom section -->
+    <div class="sidebar-footer">
+      <button mat-button class="toggle-button" (click)="toggleExpand()">
+        <mat-icon>{{ isExpanded ? 'chevron_left' : 'chevron_right' }}</mat-icon>
+        <span *ngIf="isExpanded">Collapse</span>
+      </button>
+      
+      <div class="copyright" *ngIf="isExpanded">
+        <span>&copy; {{ year }} School MS</span>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,116 @@
+<!-- src/app/layout/header/header.component.html -->
+<mat-toolbar class="header">
+    <div class="toolbar-left">
+      <button mat-icon-button (click)="toggleMenu()" aria-label="Toggle sidebar">
+        <mat-icon>{{ isExpanded ? 'menu_open' : 'menu' }}</mat-icon>
+      </button>
+      
+      <div class="site-title">
+        <img src="assets/images/logo-small.png" alt="Logo" class="logo-img">
+        <span *ngIf="!isMobile" class="title">School Management</span>
+      </div>
+    </div>
+    
+    <div class="toolbar-right">
+      <!-- Search box - hidden on mobile -->
+      <div class="search-box" *ngIf="!isMobile">
+        <mat-icon>search</mat-icon>
+        <input type="text" placeholder="Search...">
+      </div>
+      
+      <!-- Notifications menu -->
+      <button mat-icon-button [matMenuTriggerFor]="notificationsMenu" class="notification-btn" matTooltip="Notifications">
+        <mat-icon [matBadge]="notificationCount" [matBadgeHidden]="notificationCount === 0" matBadgeColor="warn">notifications</mat-icon>
+      </button>
+      
+      <mat-menu #notificationsMenu="matMenu" class="notifications-menu">
+        <div class="menu-header">
+          <h3>Notifications</h3>
+          <div class="menu-actions">
+            <button mat-icon-button (click)="markAllRead(); $event.stopPropagation()" matTooltip="Mark all as read"
+              *ngIf="notificationCount > 0">
+              <mat-icon>done_all</mat-icon>
+            </button>
+            <button mat-icon-button (click)="clearNotifications(); $event.stopPropagation()" matTooltip="Clear all" 
+              *ngIf="notifications.length > 0">
+              <mat-icon>delete_sweep</mat-icon>
+            </button>
+          </div>
+        </div>
+        
+        <mat-divider></mat-divider>
+        
+        <div class="notifications-container">
+          <div *ngIf="notifications.length === 0" class="empty-state">
+            <mat-icon>notifications_off</mat-icon>
+            <p>No notifications</p>
+          </div>
+          
+          <div *ngFor="let notification of notifications" 
+               class="notification-item" 
+               [class.unread]="!notification.read"
+               (click)="markAsRead(notification.id)">
+            <div class="notification-icon">
+              <mat-icon>notification_important</mat-icon>
+            </div>
+            <div class="notification-content">
+              <div class="notification-title">{{ notification.title }}</div>
+              <div class="notification-message">{{ notification.message }}</div>
+              <div class="notification-time">{{ notification.time }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <mat-divider></mat-divider>
+        
+        <a mat-menu-item routerLink="/notifications">
+          <span>View all notifications</span>
+        </a>
+      </mat-menu>
+      
+      <!-- User menu -->
+      <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
+        <div class="user-avatar">
+          <img *ngIf="currentUser?.photo" [src]="currentUser?.photo" alt="User avatar">
+          <mat-icon *ngIf="!currentUser?.photo">account_circle</mat-icon>
+        </div>
+        <span class="username" *ngIf="!isMobile">{{ currentUser?.firstName || currentUser?.username }}</span>
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+      
+      <mat-menu #userMenu="matMenu">
+        <div class="user-menu-header">
+          <div class="user-info">
+            <div class="user-avatar large">
+              <img *ngIf="currentUser?.photo" [src]="currentUser?.photo" alt="User avatar">
+              <mat-icon *ngIf="!currentUser?.photo">account_circle</mat-icon>
+            </div>
+            <div class="user-details">
+              <div class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</div>
+              <div class="user-email">{{ currentUser?.email }}</div>
+              <div class="user-role">{{ currentUser?.role }}</div>
+            </div>
+          </div>
+        </div>
+        
+        <mat-divider></mat-divider>
+        
+        <button mat-menu-item routerLink="/profile">
+          <mat-icon>person</mat-icon>
+          <span>My Profile</span>
+        </button>
+        
+        <button mat-menu-item routerLink="/account">
+          <mat-icon>settings</mat-icon>
+          <span>Account Settings</span>
+        </button>
+        
+        <mat-divider></mat-divider>
+        
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    </div>
+  </mat-toolbar>
