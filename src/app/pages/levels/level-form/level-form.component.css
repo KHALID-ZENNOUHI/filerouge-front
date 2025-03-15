@@ -1,0 +1,19 @@
+/* src/app/features/levels/level-form/level-form.component.scss */
+.level-form-container {
+    padding: 0 16px;
+  }
+  
+  h2 {
+    margin-bottom: 16px;
+    color: #3f51b5;
+  }
+  
+  .full-width {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  
+  mat-dialog-actions {
+    padding: 16px 0;
+    margin-bottom: 0;
+  }
