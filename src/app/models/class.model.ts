@@ -1,42 +1,53 @@
-// src/app/features/classes/class.model.ts
-import { Level } from './level.model';
-
-/**
- * Represents a Class entity in the school management system
- */
+// src/app/models/class.model.ts
 export interface Class {
-  /**
-   * Unique identifier for the class, UUID format
-   */
   id: string;
-  
-  /**
-   * Name of the class
-   */
   name: string;
-  
-  /**
-   * Level that this class belongs to
-   */
-  level: Level;
-  
-  /**
-   * Optional count of students in this class
-   */
-  studentCount?: number;
-  
-  /**
-   * Optional count of programs (subjects) in this class
-   */
-  programCount?: number;
-  
-  /**
-   * Optional creation date of the class
-   */
-  createdDate?: Date;
-  
-  /**
-   * Optional last modified date of the class
-   */
-  lastModifiedDate?: Date;
+  level?: Level;
+  programs?: Program[];
+}
+
+export interface Level {
+  id: string;
+  name: string;
+  department?: Department;
+}
+
+export interface Department {
+  id: string;
+  name: string;
+}
+
+export interface Program {
+  id: string;
+  subject: Subject;
+  description?: string;
+}
+
+export interface Subject {
+  id: string;
+  name: string;
+}
+
+// Filter/Search criteria
+export interface ClassFilter {
+  name?: string;
+  levelId?: string;
+  departmentId?: string;
+}
+
+// For class creation/update
+export interface ClassRequest {
+  id?: string;
+  name: string;
+  levelId: string;
+}
+
+// Class statistics interface
+export interface ClassStatistics {
+  className: string;
+  levelName?: string;
+  departmentName?: string;
+  totalStudents: number;
+  totalSubjects: number;
+  studentsByGender?: Record<string, number>;
 }

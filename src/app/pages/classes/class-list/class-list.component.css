@@ -1,0 +1,43 @@
+/* src/app/components/class/class-list/class-list.component.css */
+.table {
+    width: 100%;
+    margin-bottom: 0;
+  }
+  
+  .table th {
+    font-weight: 600;
+    vertical-align: middle;
+  }
+  
+  .table td {
+    vertical-align: middle;
+  }
+  
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .pagination {
+    margin-bottom: 2rem;
+  }
+  
+  /* Limit pagination display to avoid overflow */
+  .pagination .page-item:nth-child(n+8) {
+    display: none;
+  }
+  
+  .pagination .page-item:last-child {
+    display: list-item;
+  }
+  
+  /* Hover effect on table rows */
+  .table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+  }
+  
+  /* Fix for action buttons not inheriting hover */
+  .table-hover tbody tr:hover .btn-group {
+    z-index: 10;
+  }
