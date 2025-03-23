@@ -25,6 +25,11 @@ import { LevelListComponent } from './pages/levels/level-list/level-list.compone
 // // Class Components
 import { ClassListComponent } from './pages/classes/class-list/class-list.component';
 import { ClassDetailComponent } from './pages/classes/class-detail/class-detail.component';
+import { ClassFormComponent } from './pages/classes/class-form/class-form.component';
+import { UserListComponent } from './pages/users/user-list/user-list.component';
+import { UserProfileComponent } from './pages/users/user-profile/user-profile.component';
+import { SubjectListComponent } from './pages/subjects/subject-list/subject-list.component';
+import { ProgramListComponent } from './pages/programs/program-list/program-list.component';
 
 // // Student Components
 // import { StudentListComponent } from './features/students/student-list/student-list.component';
@@ -73,6 +78,23 @@ export const routes: Routes = [
     //     component: DashboardComponent,
     //     title: 'Dashboard - School Management System'
     //   },
+    {
+      path: 'users',
+      children: [
+        { 
+          path: '', 
+          component: UserListComponent,
+          title: 'User Management - School Management System',
+          data: { roles: ['ADMINISTRATOR'] }
+        },
+        { 
+          path: ':id', 
+          component: UserProfileComponent,
+          title: 'User Profile - School Management System',
+          data: { roles: ['ADMINISTRATOR'] }
+        }
+      ]
+    },
 
       // Department routes
       {
@@ -116,7 +138,19 @@ export const routes: Routes = [
             title: 'Classes - School Management System',
             data: { roles: ['ADMINISTRATOR', 'TEACHER'] }
           },
+          {
+            path: 'create', 
+            component: ClassFormComponent,
+            title: 'Class Details - School Management System',
+            data: { roles: ['ADMINISTRATOR', 'TEACHER'] }
+          },
           { 
+            path: ':id/edit', 
+            component: ClassFormComponent,
+            title: 'Class Details - School Management System',
+            data: { roles: ['ADMINISTRATOR', 'TEACHER'] }
+          },
+          {
             path: ':id', 
             component: ClassDetailComponent,
             title: 'Class Details - School Management System',
@@ -125,6 +159,7 @@ export const routes: Routes = [
         ]
       },
 
+      
 //       // Student routes
 //       {
 //         path: 'students',
@@ -163,32 +198,32 @@ export const routes: Routes = [
 //         ]
 //       },
 
-//       // Subject routes
-//       {
-//         path: 'subjects',
-//         children: [
-//           { 
-//             path: '', 
-//             component: SubjectListComponent,
-//             title: 'Subjects - School Management System',
-//             data: { roles: ['ADMINISTRATOR', 'TEACHER'] }
-//           },
-//           { 
-//             path: ':id', 
-//             component: SubjectDetailComponent,
-//             title: 'Subject Details - School Management System',
-//             data: { roles: ['ADMINISTRATOR', 'TEACHER'] }
-//           }
-//         ]
-//       },
+      // Subject routes
+      {
+        path: 'subjects',
+        children: [
+          { 
+            path: '', 
+            component: SubjectListComponent,
+            title: 'Subjects - School Management System',
+            data: { roles: ['ADMINISTRATOR', 'TEACHER'] }
+          },
+          // { 
+          //   path: ':id', 
+          //   component: SubjectDetailComponent,
+          //   title: 'Subject Details - School Management System',
+          //   data: { roles: ['ADMINISTRATOR', 'TEACHER'] }
+          // }
+        ]
+      },
 
 //       // Program routes
-//       {
-//         path: 'programs',
-//         component: ProgramListComponent,
-//         title: 'Programs - School Management System',
-//         data: { roles: ['ADMINISTRATOR', 'TEACHER'] }
-//       },
+      {
+        path: 'programs',
+        component: ProgramListComponent,
+        title: 'Programs - School Management System',
+        data: { roles: ['ADMINISTRATOR', 'TEACHER'] }
+      },
 
 //       // User Profile & Settings
 //       {
