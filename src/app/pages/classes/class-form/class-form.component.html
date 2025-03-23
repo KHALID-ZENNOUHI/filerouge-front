@@ -1,105 +1,148 @@
-<!-- src/app/components/class/class-form/class-form.component.html -->
-<div class="container mt-4">
-    <div class="row mb-4">
-      <div class="col">
-        <h2>{{ isEditMode ? 'Edit' : 'Create' }} Class</h2>
-      </div>
-      <div class="col-auto">
-        <a [routerLink]="['/classes']" class="btn btn-outline-secondary">
-          <i class="bi bi-arrow-left"></i> Back to Classes
-        </a>
+<!-- src/app/pages/classes/class-form/class-form.component.html -->
+<div class="page-wrapper">
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="page-sub-header">
+            <h3 class="page-title"><i class="fas fa-chalkboard-teacher"></i> {{ isEditMode ? 'Edit' : 'Add New' }} Class</h3>
+            <ul class="breadcrumb">
+              <li class="breadcrumb-item"><a [routerLink]="['/classes']">Classes</a></li>
+              <li class="breadcrumb-item active">{{ isEditMode ? 'Edit Class' : 'Add Class' }}</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
-  
+
     <!-- Loading Indicator -->
-    <div *ngIf="loading" class="d-flex justify-content-center my-5">
-      <div class="spinner-border" role="status">
+    <div *ngIf="loading" class="text-center my-5">
+      <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
+      <p class="mt-2 text-muted">Loading class data...</p>
     </div>
-  
+
     <!-- Error Message -->
     <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
-      {{ error }}
+      <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
       <button type="button" class="btn-close" (click)="error = null" aria-label="Close"></button>
     </div>
-  
+
     <!-- Success Message -->
     <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
-      {{ successMessage }}
+      <i class="fas fa-check-circle me-2"></i>{{ successMessage }}
       <button type="button" class="btn-close" (click)="successMessage = null" aria-label="Close"></button>
     </div>
-  
-    <!-- Class Form -->
-    <div class="card">
-      <div class="card-body">
-        <form [formGroup]="classForm" (ngSubmit)="onSubmit()">
-          <div class="mb-3">
-            <label for="name" class="form-label">Class Name <span class="text-danger">*</span></label>
-            <input 
-              type="text" 
-              class="form-control" 
-              id="name" 
-              formControlName="name" 
-              [ngClass]="{'is-invalid': isFieldInvalid('name')}"
-              placeholder="Enter class name" 
-            >
-            <div *ngIf="isFieldInvalid('name')" class="invalid-feedback">
-              {{ getFieldError('name') }}
-            </div>
+
+    <!-- Form Card -->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card comman-shadow">
+          <div class="card-header">
+            <h5 class="card-title">{{ isEditMode ? 'Update' : 'Create' }} Class Information</h5>
           </div>
-  
-          <div class="mb-3">
-            <label for="departmentId" class="form-label">Department <span class="text-danger">*</span></label>
-            <select 
-              class="form-select" 
-              id="departmentId" 
-              formControlName="departmentId" 
-              [ngClass]="{'is-invalid': isFieldInvalid('departmentId')}"
-              (change)="onDepartmentChange()"
-            >
-              <option value="">Select Department</option>
-              <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
-            </select>
-            <div *ngIf="isFieldInvalid('departmentId')" class="invalid-feedback">
-              {{ getFieldError('departmentId') }}
-            </div>
+          <div class="card-body">
+            <form [formGroup]="classForm" (ngSubmit)="onSubmit()">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="className" class="form-label">Class Name <span class="text-danger">*</span></label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="className" 
+                    formControlName="name" 
+                    [ngClass]="{'is-invalid': isFieldInvalid('name')}"
+                    placeholder="Enter class name" 
+                  >
+                  <div *ngIf="isFieldInvalid('name')" class="invalid-feedback">
+                    {{ getFieldError('name') }}
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="departmentId" class="form-label">Department <span class="text-danger">*</span></label>
+                  <select 
+                    class="form-select" 
+                    id="departmentId" 
+                    formControlName="departmentId" 
+                    [ngClass]="{'is-invalid': isFieldInvalid('departmentId')}"
+                    (change)="onDepartmentChange()"
+                    [disabled]="departmentsLoading"
+                  >
+                    <option value="">Select Department</option>
+                    <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
+                  </select>
+                  <div *ngIf="departmentsLoading" class="text-muted small mt-1">
+                    <i class="fas fa-spinner fa-spin me-1"></i> Loading departments...
+                  </div>
+                  <div *ngIf="isFieldInvalid('departmentId')" class="invalid-feedback">
+                    {{ getFieldError('departmentId') }}
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                  <label for="levelId" class="form-label">Level <span class="text-danger">*</span></label>
+                  <select 
+                    class="form-select" 
+                    id="levelId" 
+                    formControlName="levelId" 
+                    [ngClass]="{'is-invalid': isFieldInvalid('levelId')}"
+                    [disabled]="!levels.length || levelsLoading"
+                  >
+                    <option value="">Select Level</option>
+                    <option *ngFor="let level of levels" [value]="level.id">{{ level.name }}</option>
+                  </select>
+                  <div *ngIf="levelsLoading" class="text-muted small mt-1">
+                    <i class="fas fa-spinner fa-spin me-1"></i> Loading levels...
+                  </div>
+                  <div *ngIf="isFieldInvalid('levelId')" class="invalid-feedback">
+                    {{ getFieldError('levelId') }}
+                  </div>
+                  <div *ngIf="!levels.length && !levelsLoading && classForm.get('departmentId')?.value" class="text-muted small mt-1">
+                    <i class="fas fa-info-circle me-1"></i> No levels found for selected department.
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                  <label for="programId" class="form-label">Program (Optional)</label>
+                  <select 
+                    class="form-select" 
+                    id="programId" 
+                    formControlName="programId"
+                    [disabled]="programsLoading"
+                  >
+                    <option value="">No Program</option>
+                    <option *ngFor="let program of programs" [value]="program.id">
+                      {{ program.name || 'Program ' + program.id }}
+                    </option>
+                  </select>
+                  <div *ngIf="programsLoading" class="text-muted small mt-1">
+                    <i class="fas fa-spinner fa-spin me-1"></i> Loading programs...
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 mt-4">
+                <div class="student-submit text-end">
+                  <button type="button" class="btn btn-secondary me-2" [routerLink]="['/classes']">
+                    <i class="fas fa-times me-1"></i>Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    class="btn btn-primary" 
+                    [disabled]="classForm.invalid || loading"
+                  >
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    <i *ngIf="!loading" class="fas fa-save me-1"></i>{{ isEditMode ? 'Update' : 'Create' }} Class
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
-  
-          <div class="mb-4">
-            <label for="levelId" class="form-label">Level <span class="text-danger">*</span></label>
-            <select 
-              class="form-select" 
-              id="levelId" 
-              formControlName="levelId" 
-              [ngClass]="{'is-invalid': isFieldInvalid('levelId')}"
-              [disabled]="!levels.length"
-            >
-              <option value="">Select Level</option>
-              <option *ngFor="let level of levels" [value]="level.id">{{ level.name }}</option>
-            </select>
-            <div *ngIf="isFieldInvalid('levelId')" class="invalid-feedback">
-              {{ getFieldError('levelId') }}
-            </div>
-            <small *ngIf="!levels.length && classForm.get('departmentId')?.value" class="text-muted">
-              No levels found for selected department. Please create a level first.
-            </small>
-          </div>
-  
-          <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-secondary me-2" [routerLink]="['/classes']">
-              Cancel
-            </button>
-            <button 
-              type="submit" 
-              class="btn btn-primary" 
-              [disabled]="classForm.invalid || loading"
-            >
-              <span *ngIf="loading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-              {{ isEditMode ? 'Update' : 'Create' }} Class
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
+</div>

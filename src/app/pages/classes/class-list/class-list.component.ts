@@ -1,5 +1,5 @@
 // src/app/components/class/class-list/class-list.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -18,8 +18,6 @@ export class ClassListComponent implements OnInit {
   departments: any[] = [];
   levels: any[] = [];
   
-  // constructor(private classService: ClassService) {}
-  
   // Pagination
   currentPage = 0;
   pageSize = 10;
@@ -33,12 +31,7 @@ export class ClassListComponent implements OnInit {
   loading = false;
   error: string | null = null;
   
-  constructor(private classService: ClassService) { 
-    // Initialize collections to empty arrays
-    this.classes = [];
-    this.departments = [];
-    this.levels = [];
-  }
+  constructor(private classService: ClassService) {}
 
   ngOnInit(): void {
     this.loadDepartments();
@@ -58,33 +51,37 @@ export class ClassListComponent implements OnInit {
             // Initialize to empty array in case of error
             this.classes = [];
             
-            // Check if response follows Spring Data JPA Page structure
-            if (response && typeof response === 'object' && 'content' in response) {
-              // It's a paginated response
-              if (Array.isArray(response.content)) {
-                this.classes = response.content;
-                this.totalItems = response.totalElements || 0;
-                this.totalPages = response.totalPages || 1;
-              }
-            } else if (Array.isArray(response)) {
-              // It's an array directly
+            if (Array.isArray(response)) {
+              // Direct array response
               this.classes = response;
               this.totalItems = response.length;
               this.totalPages = 1;
-            } else {
-              console.warn('Unexpected response format:', response);
-              // Handle unexpected response format
-              this.classes = [];
-              this.totalItems = 0;
-              this.totalPages = 0;
+            } else if (response && typeof response === 'object') {
+              if (Array.isArray(response.content)) {
+                // Paginated response
+                this.classes = response.content;
+                this.totalItems = response.totalElements || 0;
+                this.totalPages = response.totalPages || 1;
+              } else if (response._embedded && Array.isArray(response._embedded.classesList)) {
+                // Spring HATEOAS format
+                this.classes = response._embedded.classesList;
+                this.totalItems = response.page?.totalElements || this.classes.length;
+                this.totalPages = response.page?.totalPages || 1;
+              }
             }
+            
+            if (this.classes.length === 0) {
+              console.warn('No classes found or unexpected response format:', response);
+            }
+            
+            this.loading = false;
           } catch (e) {
             console.error('Error processing response:', e);
             this.classes = [];
             this.totalItems = 0;
             this.totalPages = 0;
+            this.loading = false;
           }
-          this.loading = false;
         },
         error: (err) => {
           this.error = 'Failed to load classes. Please try again.';
@@ -103,6 +100,7 @@ export class ClassListComponent implements OnInit {
         next: (departments) => {
           // Ensure departments is an array
           this.departments = Array.isArray(departments) ? departments : [];
+          console.log('Departments loaded:', this.departments);
         },
         error: (err) => {
           console.error('Error loading departments:', err);
@@ -118,6 +116,7 @@ export class ClassListComponent implements OnInit {
           next: (levels) => {
             // Ensure levels is an array
             this.levels = Array.isArray(levels) ? levels : [];
+            console.log('Levels loaded:', this.levels);
             this.filter.levelId = ''; // Reset level selection
           },
           error: (err) => {
@@ -165,20 +164,69 @@ export class ClassListComponent implements OnInit {
     this.loading = true;
     
     if (this.hasActiveFilters()) {
-      this.classService.searchClasses(this.filter, this.currentPage, this.pageSize)
-        .subscribe({
-          next: (response) => {
-            this.classes = response.content;
-            this.totalItems = response.totalElements;
-            this.totalPages = response.totalPages;
-            this.loading = false;
-          },
-          error: (err) => {
-            this.error = 'Failed to search classes. Please try again.';
-            console.error('Error searching classes:', err);
-            this.loading = false;
-          }
-        });
+      if (this.filter.levelId) {
+        // If level filter is active, get classes by level
+        this.classService.getClassesByLevelId(this.filter.levelId)
+          .subscribe({
+            next: (response) => {
+              this.classes = Array.isArray(response) ? response : [];
+              this.totalItems = this.classes.length;
+              this.totalPages = 1;
+              this.loading = false;
+            },
+            error: (err) => {
+              this.error = 'Failed to search classes. Please try again.';
+              console.error('Error searching classes by level:', err);
+              this.loading = false;
+              this.classes = [];
+            }
+          });
+      } else if (this.filter.departmentId) {
+        // If department filter is active, get classes by department
+        this.classService.getClassesByDepartmentId(this.filter.departmentId)
+          .subscribe({
+            next: (response) => {
+              this.classes = Array.isArray(response) ? response : [];
+              this.totalItems = this.classes.length;
+              this.totalPages = 1;
+              this.loading = false;
+            },
+            error: (err) => {
+              this.error = 'Failed to search classes. Please try again.';
+              console.error('Error searching classes by department:', err);
+              this.loading = false;
+              this.classes = [];
+            }
+          });
+      } else if (this.filter.name) {
+        // If only name filter is active, use general search
+        this.classService.searchClasses(this.filter, this.currentPage, this.pageSize)
+          .subscribe({
+            next: (response) => {
+              if (response && Array.isArray(response.content)) {
+                this.classes = response.content;
+                this.totalItems = response.totalElements || 0;
+                this.totalPages = response.totalPages || 1;
+              } else if (Array.isArray(response)) {
+                this.classes = response;
+                this.totalItems = response.length;
+                this.totalPages = 1;
+              } else {
+                this.classes = [];
+                this.totalItems = 0;
+                this.totalPages = 0;
+                console.warn('Unexpected response format:', response);
+              }
+              this.loading = false;
+            },
+            error: (err) => {
+              this.error = 'Failed to search classes. Please try again.';
+              console.error('Error searching classes:', err);
+              this.loading = false;
+              this.classes = [];
+            }
+          });
+      }
     } else {
       this.loadClasses();
     }
@@ -209,6 +257,10 @@ export class ClassListComponent implements OnInit {
     }
   }
 
+  refreshList(): void {
+    this.loadClasses();
+  }
+  
   deleteClass(id: string, event: Event): void {
     event.stopPropagation();
     if (confirm('Are you sure you want to delete this class?')) {

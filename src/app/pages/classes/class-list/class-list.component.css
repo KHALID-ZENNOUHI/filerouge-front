@@ -1,43 +1,159 @@
 /* src/app/components/class/class-list/class-list.component.css */
-.table {
+.page-wrapper {
+  min-height: 100vh;
+  background: #f7f7f7;
+  padding: 1.875rem 0;
+}
+
+.page-header {
+  margin-bottom: 1.875rem;
+}
+
+.page-title {
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.breadcrumb {
+  background: transparent;
+  padding: 0;
+}
+
+.breadcrumb-item a {
+  color: #6c757d;
+  text-decoration: none;
+}
+
+.breadcrumb-item.active {
+  color: #333;
+}
+
+.student-group-form {
+  margin-bottom: 1.875rem;
+}
+
+.card-table {
+  border: 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 0.25rem;
+  margin-bottom: 1.875rem;
+  background-color: #fff;
+}
+
+.comman-shadow {
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  border-radius: 0.25rem 0.25rem 0 0;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.card-header a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-body {
+  padding: 1rem;
+}
+
+.card-title, .card-text {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.card-footer {
+  background: #f9f9f9;
+  border-top: 1px solid #eaeaea;
+  padding: 0.75rem;
+}
+
+.card-footer .btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.card-footer .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  margin: 0.25rem;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-footer .btn i {
+  margin-right: 5px;
+}
+
+.text-muted {
+  font-size: 0.875rem;
+}
+
+.download-grp {
+  display: flex;
+  align-items: center;
+}
+
+.btn-outline-gray {
+  border: 1px solid #ced4da;
+  background-color: #fff;
+  color: #495057;
+}
+
+.btn-outline-gray:hover {
+  background-color: #f8f9fa;
+}
+
+.classSearch {
+  height: 45px;
+  border-radius: 30px;
+  border: 1px solid #ced4da;
+  padding: 0.375rem 1.2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.classSearch:focus {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  border-color: #86b7fe;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+.pagination {
+  margin-bottom: 2rem;
+}
+
+.page-link {
+  color: #0d6efd;
+  border-color: #dee2e6;
+}
+
+.page-item.active .page-link {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .card-footer .btn-group {
+    flex-direction: column;
+  }
+  
+  .card-footer .btn {
     width: 100%;
-    margin-bottom: 0;
+    margin-bottom: 0.25rem;
   }
-  
-  .table th {
-    font-weight: 600;
-    vertical-align: middle;
-  }
-  
-  .table td {
-    vertical-align: middle;
-  }
-  
-  .spinner-border {
-    width: 3rem;
-    height: 3rem;
-  }
-  
-  .pagination {
-    margin-bottom: 2rem;
-  }
-  
-  /* Limit pagination display to avoid overflow */
-  .pagination .page-item:nth-child(n+8) {
-    display: none;
-  }
-  
-  .pagination .page-item:last-child {
-    display: list-item;
-  }
-  
-  /* Hover effect on table rows */
-  .table-hover tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    cursor: pointer;
-  }
-  
-  /* Fix for action buttons not inheriting hover */
-  .table-hover tbody tr:hover .btn-group {
-    z-index: 10;
-  }
+}
