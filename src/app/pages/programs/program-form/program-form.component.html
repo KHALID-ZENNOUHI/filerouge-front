@@ -1,0 +1,93 @@
+<!-- src/app/pages/programs/program-form/program-form.component.html -->
+<div class="program-form-container">
+    <h2 mat-dialog-title>{{ dialogTitle }}</h2>
+    
+    <form [formGroup]="programForm" (ngSubmit)="submit()">
+      <mat-dialog-content>
+        <!-- Hidden ID field for edit mode -->
+        <input type="hidden" formControlName="id">
+        
+        <!-- Program Description -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Program Description</mat-label>
+          <textarea matInput formControlName="description" placeholder="Enter program description" rows="4"></textarea>
+          <mat-icon matPrefix>description</mat-icon>
+          <mat-error *ngIf="hasError('description', 'required')">
+            Description is required
+          </mat-error>
+          <mat-error *ngIf="hasError('description', 'minlength')">
+            Description must be at least 5 characters
+          </mat-error>
+          <mat-error *ngIf="hasError('description', 'maxlength')">
+            Description cannot exceed 500 characters
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Class Selection (only for new programs) -->
+        <div *ngIf="!isEditMode" class="selection-container">
+          <h3>Classes</h3>
+          <p class="hint-text">Select classes to include in this program (optional)</p>
+          
+          <div *ngIf="loadingClasses" class="loading-spinner">
+            <mat-spinner diameter="24"></mat-spinner>
+            <span>Loading classes...</span>
+          </div>
+          
+          <div *ngIf="!loadingClasses && classes.length === 0" class="empty-message">
+            <mat-icon>info</mat-icon>
+            <span>No classes available</span>
+          </div>
+          
+          <div *ngIf="!loadingClasses && classes.length > 0" class="chip-container">
+            <div *ngFor="let classItem of classes" 
+                 class="chip" 
+                 [class.selected]="isClassSelected(classItem)"
+                 (click)="toggleClass(classItem)">
+              <span>{{ classItem.name }}</span>
+              <mat-icon *ngIf="isClassSelected(classItem)">check</mat-icon>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Subject Selection (only for new programs) -->
+        <div *ngIf="!isEditMode" class="selection-container">
+          <h3>Subjects</h3>
+          <p class="hint-text">Select subjects to include in this program (optional)</p>
+          
+          <div *ngIf="loadingSubjects" class="loading-spinner">
+            <mat-spinner diameter="24"></mat-spinner>
+            <span>Loading subjects...</span>
+          </div>
+          
+          <div *ngIf="!loadingSubjects && subjects.length === 0" class="empty-message">
+            <mat-icon>info</mat-icon>
+            <span>No subjects available</span>
+          </div>
+          
+          <div *ngIf="!loadingSubjects && subjects.length > 0" class="chip-container">
+            <div *ngFor="let subject of subjects" 
+                 class="chip" 
+                 [class.selected]="isSubjectSelected(subject)"
+                 (click)="toggleSubject(subject)">
+              <span>{{ subject.name }}</span>
+              <mat-icon *ngIf="isSubjectSelected(subject)">check</mat-icon>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="!isEditMode" class="note">
+          <mat-icon>info</mat-icon>
+          <span>Associations can be modified later from the program details page.</span>
+        </div>
+        
+      </mat-dialog-content>
+      
+      <mat-dialog-actions align="end">
+        <button mat-button type="button" (click)="cancel()" [disabled]="isLoading">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="programForm.invalid || isLoading">
+          <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+          <span *ngIf="!isLoading">{{ isEditMode ? 'Update' : 'Create' }}</span>
+        </button>
+      </mat-dialog-actions>
+    </form>
+  </div>
