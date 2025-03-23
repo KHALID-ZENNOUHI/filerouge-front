@@ -1,0 +1,211 @@
+<!-- src/app/pages/users/user-profile/user-profile.component.html -->
+<div class="profile-container">
+    <div class="page-header">
+      <div class="title-section">
+        <a [routerLink]="['/users']" class="back-link">
+          <mat-icon>arrow_back</mat-icon>
+          <span>Back to Users</span>
+        </a>
+        <h1 class="page-title">User Profile</h1>
+      </div>
+      
+      <div class="action-buttons" *ngIf="user">
+        <button mat-raised-button color="primary" (click)="openEditUserDialog()">
+          <mat-icon>edit</mat-icon>
+          Edit
+        </button>
+        
+        <button mat-stroked-button color="primary" (click)="openResetPasswordDialog()">
+          <mat-icon>password</mat-icon>
+          Reset Password
+        </button>
+        
+        <button mat-stroked-button [color]="user.enabled ? 'warn' : 'primary'" (click)="toggleUserStatus()">
+          <mat-icon>{{ user.enabled ? 'block' : 'check_circle' }}</mat-icon>
+          {{ user.enabled ? 'Disable' : 'Enable' }}
+        </button>
+        
+        <button mat-stroked-button color="warn" (click)="deleteUser()">
+          <mat-icon>delete</mat-icon>
+          Delete
+        </button>
+      </div>
+    </div>
+    
+    <!-- Loading indicator -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading user profile...</p>
+    </div>
+    
+    <!-- Error message -->
+    <div *ngIf="error" class="error-container">
+      <mat-icon color="warn">error</mat-icon>
+      <p>{{ error }}</p>
+      <button mat-stroked-button color="primary" (click)="loadUserProfile()">Try Again</button>
+    </div>
+    
+    <!-- User profile content -->
+    <div *ngIf="!isLoading && !error && user" class="profile-content">
+      <!-- User overview card -->
+      <mat-card class="profile-card">
+        <div class="profile-header">
+          <div class="user-avatar">
+            <img *ngIf="user.photo" [src]="user.photo" alt="User photo">
+            <mat-icon *ngIf="!user.photo">account_circle</mat-icon>
+          </div>
+          
+          <div class="user-info">
+            <h2 class="user-name">{{ user.firstName }} {{ user.lastName }}</h2>
+            <p class="user-username">{{ user.username }}</p>
+            <div class="user-status">
+              <span class="role-badge" [ngClass]="getRoleClass(user.role)">{{ user.role }}</span>
+              
+              <span class="status-chip" [ngClass]="{'status-enabled': user.enabled, 'status-disabled': !user.enabled}">
+                {{ user.enabled ? 'Enabled' : 'Disabled' }}
+              </span>
+              
+              <span class="status-chip status-locked" *ngIf="user.locked">
+                Locked
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <mat-divider></mat-divider>
+        
+        <!-- Detailed user information tabs -->
+        <mat-tab-group>
+          <!-- Basic Info Tab -->
+          <mat-tab label="Basic Info">
+            <div class="tab-content">
+              <div class="info-section">
+                <div class="info-row">
+                  <div class="info-label">Full Name</div>
+                  <div class="info-value">{{ user.firstName }} {{ user.lastName }}</div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Username</div>
+                  <div class="info-value">{{ user.username }}</div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Email</div>
+                  <div class="info-value">{{ user.email }}</div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Role</div>
+                  <div class="info-value">{{ user.role }}</div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Gender</div>
+                  <div class="info-value">{{ user.gender }}</div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Account Status</div>
+                  <div class="info-value">
+                    {{ user.enabled ? 'Enabled' : 'Disabled' }}
+                    {{ user.locked ? ' (Locked)' : '' }}
+                  </div>
+                </div>
+                
+                <div class="info-row" *ngIf="user.lastLogin">
+                  <div class="info-label">Last Login</div>
+                  <div class="info-value">{{ getFormattedDate(user.lastLogin) }}</div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+          
+          <!-- Contact Info Tab -->
+          <mat-tab label="Contact Info">
+            <div class="tab-content">
+              <div class="info-section">
+                <div class="info-row">
+                  <div class="info-label">Phone</div>
+                  <div class="info-value">{{ user.phone }}</div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Email</div>
+                  <div class="info-value">{{ user.email }}</div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Address</div>
+                  <div class="info-value">{{ user.address || 'Not provided' }}</div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+          
+          <!-- Personal Info Tab -->
+          <mat-tab label="Personal Info">
+            <div class="tab-content">
+              <div class="info-section">
+                <div class="info-row">
+                  <div class="info-label">CIN (National ID)</div>
+                  <div class="info-value">{{ user.cin }}</div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Birth Date</div>
+                  <div class="info-value">{{ getFormattedDate(user.birthDate) }}</div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Birth Place</div>
+                  <div class="info-value">{{ user.birthPlace || 'Not provided' }}</div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Gender</div>
+                  <div class="info-value">{{ user.gender }}</div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+          
+          <!-- Role-specific Tab -->
+          <mat-tab label="Student Details" *ngIf="user.role === 'STUDENT'">
+            <div class="tab-content">
+              <div class="info-section">
+                <div class="info-row" *ngIf="user.class">
+                  <div class="info-label">Class</div>
+                  <div class="info-value">{{ user.class.name }}</div>
+                </div>
+                
+                <div class="info-row" *ngIf="user.parent">
+                  <div class="info-label">Parent</div>
+                  <div class="info-value">{{ user.parent.firstName }} {{ user.parent.lastName }}</div>
+                </div>
+                
+                <div class="info-row" *ngIf="user.parent?.id">
+                  <div class="info-label">Parent Profile</div>
+                  <div class="info-value">
+                    <a [routerLink]="['/users', user.parent?.id]" class="parent-link">
+                      View Parent's Profile
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card>
+    </div>
+    
+    <!-- User not found -->
+    <div *ngIf="!isLoading && !error && !user" class="not-found-container">
+      <mat-icon>person_off</mat-icon>
+      <h2>User Not Found</h2>
+      <p>The user you're looking for doesn't exist or has been deleted.</p>
+      <button mat-raised-button color="primary" [routerLink]="['/users']">
+        Back to Users
+      </button>
+    </div>
+  </div>
