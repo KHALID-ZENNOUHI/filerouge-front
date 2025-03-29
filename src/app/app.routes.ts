@@ -30,6 +30,7 @@ import { UserListComponent } from './pages/users/user-list/user-list.component';
 import { UserProfileComponent } from './pages/users/user-profile/user-profile.component';
 import { SubjectListComponent } from './pages/subjects/subject-list/subject-list.component';
 import { ProgramListComponent } from './pages/programs/program-list/program-list.component';
+import { LandingComponent } from './pages/landing/landing.component';
 
 // // Student Components
 // import { StudentListComponent } from './features/students/student-list/student-list.component';
@@ -58,6 +59,10 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full'
+  },
+  {
+    path: '',
+    component: LandingComponent,
   },
 
   // Authentication routes
