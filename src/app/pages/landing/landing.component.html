@@ -1,0 +1,191 @@
+<!-- src/app/pages/landing/landing.component.html -->
+<div class="landing-container">
+    <!-- Navigation Bar -->
+    <mat-toolbar color="primary" class="navbar">
+      <div class="container">
+        <div class="navbar-brand">
+          <img src="assets/images/myschool.png" alt="School Management System" class="logo">
+          <span class="brand-text">School Management System</span>
+        </div>
+        <div class="navbar-actions">
+          <a mat-button routerLink="/login" class="login-btn">
+            <mat-icon>login</mat-icon>
+            Sign In
+          </a>
+          <a mat-raised-button color="accent" routerLink="/register" class="register-btn">
+            Get Started
+          </a>
+        </div>
+      </div>
+    </mat-toolbar>
+  
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1 class="hero-title">Streamline Your School Administration</h1>
+            <p class="hero-subtitle">
+              A comprehensive management system designed to simplify academic operations, 
+              enhance communication, and improve educational outcomes.
+            </p>
+            <div class="hero-actions">
+              <a mat-raised-button color="accent" class="cta-button" routerLink="/login">
+                Start Now
+              </a>
+              <a mat-stroked-button color="accent" (click)="learnMoreClick()" class="secondary-button">
+                Learn More
+              </a>
+            </div>
+          </div>
+          <div class="hero-image">
+            <img src="assets/images/login.png" alt="Dashboard Preview">
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Powerful Features</h2>
+          <p class="section-subtitle">Everything you need to manage your educational institution efficiently</p>
+        </div>
+        
+        <div class="features-grid">
+          <mat-card *ngFor="let feature of features" class="feature-card">
+            <mat-icon class="feature-icon">{{feature.icon}}</mat-icon>
+            <h3 class="feature-title">{{feature.title}}</h3>
+            <p class="feature-description">{{feature.description}}</p>
+          </mat-card>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Key Benefits Section -->
+    <section class="benefits-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Key Benefits</h2>
+          <p class="section-subtitle">Transform your educational institution with our comprehensive solution</p>
+        </div>
+        
+        <div class="benefits-content">
+          <div class="benefits-list">
+            <div class="benefit-item">
+              <mat-icon>check_circle</mat-icon>
+              <span>Reduce administrative workload by up to 60%</span>
+            </div>
+            <div class="benefit-item">
+              <mat-icon>check_circle</mat-icon>
+              <span>Improve communication between staff, students, and parents</span>
+            </div>
+            <div class="benefit-item">
+              <mat-icon>check_circle</mat-icon>
+              <span>Generate detailed reports on academic performance</span>
+            </div>
+            <div class="benefit-item">
+              <mat-icon>check_circle</mat-icon>
+              <span>Streamline scheduling and resource allocation</span>
+            </div>
+            <div class="benefit-item">
+              <mat-icon>check_circle</mat-icon>
+              <span>Centralize all school data in a secure platform</span>
+            </div>
+            <div class="benefit-item">
+              <mat-icon>check_circle</mat-icon>
+              <span>Access your school management system anytime, anywhere</span>
+            </div>
+          </div>
+          <div class="benefits-image">
+            <img src="assets/images/benefits-illustration.png" alt="Benefits Illustration">
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">What Our Users Say</h2>
+          <p class="section-subtitle">Join hundreds of satisfied educational institutions</p>
+        </div>
+        
+        <div class="testimonials-grid">
+          <mat-card *ngFor="let testimonial of testimonials" class="testimonial-card">
+            <mat-icon class="quote-icon">format_quote</mat-icon>
+            <p class="testimonial-quote">{{testimonial.quote}}</p>
+            <div class="testimonial-author">
+              <h4>{{testimonial.author}}</h4>
+              <p>{{testimonial.position}}</p>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+    </section>
+  
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-content">
+          <h2>Ready to transform your school administration?</h2>
+          <p>Get started today and experience the difference.</p>
+          <a mat-raised-button color="accent" class="cta-button" routerLink="/login">
+            Sign In Now
+          </a>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <img src="assets/images/logo-white.png" alt="School Management System" class="footer-logo">
+            <p>A comprehensive solution for educational institutions.</p>
+          </div>
+          
+          <div class="footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Features</a></li>
+              <li><a href="#">Pricing</a></li>
+              <li><a href="#">Support</a></li>
+            </ul>
+          </div>
+          
+          <div class="footer-links">
+            <h3>Resources</h3>
+            <ul>
+              <li><a href="#">Documentation</a></li>
+              <li><a href="#">Tutorials</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">FAQ</a></li>
+            </ul>
+          </div>
+          
+          <div class="footer-contact">
+            <h3>Contact Us</h3>
+            <p><mat-icon>email</mat-icon> info&#64;schoolms.com</p>
+            <p><mat-icon>phone</mat-icon> +1 (555) 123-4567</p>
+          </div>
+        </div>
+        
+        <mat-divider class="footer-divider"></mat-divider>
+        
+        <div class="footer-bottom">
+          <p>&copy; {{year}} School Management System. All Rights Reserved.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook"><mat-icon>facebook</mat-icon></a>
+            <a href="#" aria-label="Twitter"><mat-icon>twitter</mat-icon></a>
+            <a href="#" aria-label="LinkedIn"><mat-icon>linkedin</mat-icon></a>
+            <a href="#" aria-label="Instagram"><mat-icon>instagram</mat-icon></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
