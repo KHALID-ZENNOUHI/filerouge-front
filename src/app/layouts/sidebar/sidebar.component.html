@@ -1,40 +1,183 @@
-<!-- src/app/layout/sidebar/sidebar.component.html -->
+<!-- src/app/layouts/sidebar/sidebar.component.html -->
 <div class="sidebar-container" [class.expanded]="isExpanded">
-    <!-- Logo section -->
-    <div class="logo-container">
-      <img src="assets/images/logo-white.png" alt="Logo" class="logo">
-      <span class="app-name" *ngIf="isExpanded">School MS</span>
+  <!-- Logo section -->
+  <div class="logo-container">
+    <div class="logo-wrapper">
+      <img src="assets/images/myschool.png" alt="Logo" class="logo">
+      <!-- <span class="app-name" *ngIf="isExpanded">School MS</span> -->
     </div>
     
-    <mat-divider class="divider"></mat-divider>
-    
-    <!-- Navigation menu -->
-    <div class="nav-list-container">
-      <mat-nav-list class="nav-list">
-        <ng-container *ngFor="let item of navItems">
-          <a mat-list-item 
-             *ngIf="hasPermission(item)"
-             [routerLink]="item.route" 
-             routerLinkActive="active-link"
-             class="nav-item"
-             [matTooltip]="!isExpanded ? item.name : ''"
-             matTooltipPosition="right">
-            <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
-            <span class="nav-text" *ngIf="isExpanded">{{ item.name }}</span>
-          </a>
-        </ng-container>
-      </mat-nav-list>
-    </div>
+    <!-- Mobile toggle button -->
+    <button mat-icon-button class="mobile-toggle" (click)="toggleExpand()">
+      <i [class]="isExpanded ? 'fa-solid fa-chevron-left' : 'fa-solid fa-chevron-right'"></i>
+    </button>
+  </div>
   
-    <!-- Bottom section -->
-    <div class="sidebar-footer">
-      <button mat-button class="toggle-button" (click)="toggleExpand()">
-        <mat-icon>{{ isExpanded ? 'chevron_left' : 'chevron_right' }}</mat-icon>
-        <span *ngIf="isExpanded">Collapse</span>
-      </button>
-      
-      <div class="copyright" *ngIf="isExpanded">
-        <span>&copy; {{ year }} School MS</span>
+  <mat-divider class="divider"></mat-divider>
+  
+  <!-- User profile section -->
+  <div class="user-profile" *ngIf="currentUser">
+    <div class="avatar-container">
+      <div class="avatar">
+        <img *ngIf="currentUser.photo" [src]="currentUser.photo" alt="User avatar">
+        <i *ngIf="!currentUser.photo" class="fa-solid fa-user"></i>
       </div>
     </div>
+    <div class="user-info" *ngIf="isExpanded">
+      <h3 class="user-name">{{ currentUser.firstName || currentUser.username }}</h3>
+      <p class="user-role">{{ currentUser.role }}</p>
+    </div>
   </div>
+  
+  <mat-divider class="divider"></mat-divider>
+  
+  <!-- Menu section -->
+  <div class="menu-section">
+    <h6 class="menu-heading" *ngIf="isExpanded">MAIN MENU</h6>
+  </div>
+  
+  <!-- Navigation menu -->
+  <div class="nav-list-container">
+    <ul class="nav-list">
+      <!-- Dashboard -->
+      <li class="nav-item-wrapper" [class.hidden]="!hasPermission(menuItems.dashboard)">
+        <a 
+          class="nav-item" 
+          [routerLink]="menuItems.dashboard.route" 
+          routerLinkActive="active-link"
+          [matTooltip]="!isExpanded ? menuItems.dashboard.name : ''"
+          matTooltipPosition="right">
+          <span class="icon-container">
+            <i [class]="menuItems.dashboard.icon"></i>
+          </span>
+          <span class="nav-text" *ngIf="isExpanded">{{ menuItems.dashboard.name }}</span>
+          <i class="fa-solid fa-chevron-right nav-arrow" *ngIf="isExpanded"></i>
+        </a>
+      </li>
+
+      <!-- Departments - Always visible for admin -->
+      <li class="nav-item-wrapper" [class.hidden]="!hasPermission(menuItems.departments)">
+        <a 
+          class="nav-item" 
+          [routerLink]="menuItems.departments.route" 
+          routerLinkActive="active-link"
+          [matTooltip]="!isExpanded ? menuItems.departments.name : ''"
+          matTooltipPosition="right">
+          <span class="icon-container">
+            <i [class]="menuItems.departments.icon"></i>
+          </span>
+          <span class="nav-text" *ngIf="isExpanded">{{ menuItems.departments.name }}</span>
+          <i class="fa-solid fa-chevron-right nav-arrow" *ngIf="isExpanded"></i>
+        </a>
+      </li>
+
+      <!-- Levels - Always visible for admin -->
+      <li class="nav-item-wrapper" [class.hidden]="!hasPermission(menuItems.levels)">
+        <a 
+          class="nav-item" 
+          [routerLink]="menuItems.levels.route" 
+          routerLinkActive="active-link"
+          [matTooltip]="!isExpanded ? menuItems.levels.name : ''"
+          matTooltipPosition="right">
+          <span class="icon-container">
+            <i [class]="menuItems.levels.icon"></i>
+          </span>
+          <span class="nav-text" *ngIf="isExpanded">{{ menuItems.levels.name }}</span>
+          <i class="fa-solid fa-chevron-right nav-arrow" *ngIf="isExpanded"></i>
+        </a>
+      </li>
+
+      <!-- Classes -->
+      <li class="nav-item-wrapper" [class.hidden]="!hasPermission(menuItems.classes)">
+        <a 
+          class="nav-item" 
+          [routerLink]="menuItems.classes.route" 
+          routerLinkActive="active-link"
+          [matTooltip]="!isExpanded ? menuItems.classes.name : ''"
+          matTooltipPosition="right">
+          <span class="icon-container">
+            <i [class]="menuItems.classes.icon"></i>
+          </span>
+          <span class="nav-text" *ngIf="isExpanded">{{ menuItems.classes.name }}</span>
+          <i class="fa-solid fa-chevron-right nav-arrow" *ngIf="isExpanded"></i>
+        </a>
+      </li>
+
+      <!-- Subjects -->
+      <li class="nav-item-wrapper" [class.hidden]="!hasPermission(menuItems.subjects)">
+        <a 
+          class="nav-item" 
+          [routerLink]="menuItems.subjects.route" 
+          routerLinkActive="active-link"
+          [matTooltip]="!isExpanded ? menuItems.subjects.name : ''"
+          matTooltipPosition="right">
+          <span class="icon-container">
+            <i [class]="menuItems.subjects.icon"></i>
+          </span>
+          <span class="nav-text" *ngIf="isExpanded">{{ menuItems.subjects.name }}</span>
+          <i class="fa-solid fa-chevron-right nav-arrow" *ngIf="isExpanded"></i>
+        </a>
+      </li>
+
+      <!-- Programs -->
+      <li class="nav-item-wrapper" [class.hidden]="!hasPermission(menuItems.programs)">
+        <a 
+          class="nav-item" 
+          [routerLink]="menuItems.programs.route" 
+          routerLinkActive="active-link"
+          [matTooltip]="!isExpanded ? menuItems.programs.name : ''"
+          matTooltipPosition="right">
+          <span class="icon-container">
+            <i [class]="menuItems.programs.icon"></i>
+          </span>
+          <span class="nav-text" *ngIf="isExpanded">{{ menuItems.programs.name }}</span>
+          <i class="fa-solid fa-chevron-right nav-arrow" *ngIf="isExpanded"></i>
+        </a>
+      </li>
+
+      <!-- Settings -->
+      <li class="nav-item-wrapper" [class.hidden]="!hasPermission(menuItems.settings)">
+        <a 
+          class="nav-item" 
+          [routerLink]="menuItems.settings.route" 
+          routerLinkActive="active-link"
+          [matTooltip]="!isExpanded ? menuItems.settings.name : ''"
+          matTooltipPosition="right">
+          <span class="icon-container">
+            <i [class]="menuItems.settings.icon"></i>
+          </span>
+          <span class="nav-text" *ngIf="isExpanded">{{ menuItems.settings.name }}</span>
+          <i class="fa-solid fa-chevron-right nav-arrow" *ngIf="isExpanded"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  
+  <!-- Bottom section -->
+  <div class="sidebar-footer">
+    <button class="toggle-button" (click)="toggleExpand()" *ngIf="!isExpanded">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+    
+    <div class="action-buttons" *ngIf="isExpanded">
+      <a [routerLink]="['/profile']" class="footer-button" matTooltip="Profile">
+        <i class="fa-solid fa-user"></i>
+      </a>
+      <a [routerLink]="['/settings']" class="footer-button" matTooltip="Settings">
+        <i class="fa-solid fa-gear"></i>
+      </a>
+      <a [routerLink]="['/login']" class="footer-button" matTooltip="Logout">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </a>
+    </div>
+    
+    <div class="copyright" *ngIf="isExpanded">
+      <span>&copy; {{ year }} School MS</span>
+    </div>
+    
+    <button class="collapse-button" *ngIf="isExpanded" (click)="toggleExpand()">
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Collapse</span>
+    </button>
+  </div>
+</div>
