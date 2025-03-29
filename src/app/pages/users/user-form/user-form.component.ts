@@ -61,6 +61,7 @@ export class UserFormComponent implements OnInit {
   // Loading state
   loadingClasses = false;
   loadingParents = false;
+  isFullInput = false;
   
   constructor(
     private fb: FormBuilder,
@@ -94,10 +95,12 @@ export class UserFormComponent implements OnInit {
       console.log('Role changed to:', role);
       this.updateFormFieldsBasedOnRole(role);
     });
+    
   }
 
   initForm(): void {
     console.log('Initializing form');
+    
     // Extract classId and parentId from the complex objects if they exist
     const classId = this.data.user?.class?.id || this.data.user?.classId || null;
     const parentId = this.data.user?.parent?.id || this.data.user?.parentId || null;
@@ -153,6 +156,7 @@ export class UserFormComponent implements OnInit {
       // Status fields (only for edit mode)
       enabled: [this.data.user?.enabled !== undefined ? this.data.user.enabled : true],
       locked: [this.data.user?.locked || false]
+      
     });
     
     // Update form fields based on initial role
@@ -161,6 +165,9 @@ export class UserFormComponent implements OnInit {
     } else {
       // Default role is STUDENT, so set validators
       this.updateFormFieldsBasedOnRole('STUDENT');
+    }
+    if(this.userForm.value !== null && this.userForm.value !== undefined && this.userForm.valid) {
+      this.isFullInput = true;
     }
   }
 
@@ -297,5 +304,12 @@ export class UserFormComponent implements OnInit {
   hasError(controlName: string, errorName: string): boolean {
     const control = this.userForm.get(controlName);
     return !!control && control.hasError(errorName) && control.touched;
+  }
+
+
+  checkFullInput(): void {
+    if(this.userForm.value !== null && this.userForm.value !== undefined && this.userForm.valid) {
+      this.isFullInput = true;
+    }
   }
 }

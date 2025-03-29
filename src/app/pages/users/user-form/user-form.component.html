@@ -250,7 +250,7 @@
       </mat-stepper>
     </mat-dialog-content>
     
-    <mat-dialog-actions align="end">
+    <mat-dialog-actions align="end" *ngIf="isFullInput">
       <button mat-button type="button" (click)="cancel()">Cancel</button>
       <button mat-raised-button color="primary" type="submit">
         {{ isEditMode ? 'Update' : 'Create' }}
